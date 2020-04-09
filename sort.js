@@ -1,8 +1,8 @@
-var totalx = 500
-var totaly = 300
+var mcbwidth = window.innerWidth
+var mcbheight = window.innerHeight
 
-var mcbwidth = window.innerWidth;
-var mcbheight = window.innerHeight;
+var totalx = mcbwidth
+var totaly = mcbheight
 
 var canvas = document.getElementById("canvas")
 var ctx = canvas.getContext("2d")
