@@ -20,7 +20,7 @@ function swap(arr, indexa, indexb){
   return arr
 }
 
-let begintime = performance.now()
+let begintime = performance.now() 
 let isdone = false
 while(!isdone){
   isdone = true
