@@ -19,3 +19,49 @@ while(!isdone){
 }
 
 console.log("manual sort: " + (performance.now()-begintime) + " ms")
+
+//gpu/merge sort
+
+/*
+function gpusort(arr){
+
+  const gpu = new GPU()
+  const sortArray = gpu.createKernel(function(arr){
+
+  }).setOutput(arr.length)
+
+  let result = sortArray(arr)
+
+}*/
+
+function gpusort(arr){
+
+  function merge(arra,arrb){
+    result = []
+    let a=0
+    let b=0
+    let isdone = false
+    while(result.length < arra.length + arrb.length && !isdone){
+      if(arra[a] > arrb[b]){
+        result.push(arrb[b])
+        b++
+      }else{
+        result.push(arra[a])
+        a++
+      }
+
+      if(a == arra.length){
+        isdone = true
+        result.concat(arrb.slice(b))
+      }
+      if(b == arrb.length){
+        isdone = true
+        result.concat(arra.slice(a))
+      }
+    }
+    return result
+  }
+
+  console.log(merge([1,3,5,7,9],[0,2,4,6]))
+
+}

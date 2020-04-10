@@ -1,30 +1,39 @@
 var mcbwidth = window.innerWidth
 var mcbheight = window.innerHeight
 
-var maxx = mcbwidth
-var maxy = Math.pow(2,32)-1
-
 var canvas = document.getElementById("canvas")
 var ctx = canvas.getContext("2d")
 
 canvas.width = mcbwidth
 canvas.height = mcbheight
 
-var truearr = new Uint32Array(maxx)
+const maxxp = mcbwidth
+const maxyp = 1000
+
+const maxxt = 40
+
+const maxyt = Math.pow(2,32)-1
+
+var truearr = new Uint32Array(maxxt)
 window.crypto.getRandomValues(truearr)
-truearr.sort()
 
 let pseudoarr = []
-for(let i=0;i<maxx;i++) pseudoarr.push(Math.random()*maxy)
+for(let i=0;i<maxxp;i++) pseudoarr.push(Math.random()*maxyp)
+
+
 pseudoarr.sort()
+truearr.sort()
 
-pseudoarr = makeFlat(pseudoarr, maxx, maxy, 2/3)
-truearr = makeFlat(truearr, maxx, maxy, 1/3)
+pseudoarr = makeFlat(pseudoarr, maxyp, 1/4)
+//truearr = makeFlat(truearr, maxyt, 2/4)
 
-plotArray(truearr, maxx, maxy, 1/3, "#FF0000")
-plotArray(pseudoarr, maxx, maxy, 2/3, "#0000FF")
 
-function makeFlat(arr, totalx, totaly, plotheight){
+//plotArray(pseudoarr, 0, maxyp, "#0000FF",true)
+plotArray(truearr, 0, maxyt, "#FF0000",true)
+//plotArray(getDerative(pseudoarr,maxyp), 0,pseudoarr.length,1,"#00FF00")
+
+function makeFlat(arr, totaly, plotheight){
+  let totalx = arr.length
   let oarr = []
   for(let i=0;i<=totalx;i++){
     oarr[i] = arr[i] - i/totalx*totaly+totaly*plotheight
@@ -32,9 +41,35 @@ function makeFlat(arr, totalx, totaly, plotheight){
   return oarr
 }
 
-function plotArray(arr, totalx, totaly, plotheight, color){
-  ctx.fillStyle = color
+function plotArray(arr, mingy, f, color,connect){
+  let maxy = Math.max(...arr.filter(number => !isNaN(number)))
+  let miny = Math.min(...arr.filter(number => !isNaN(number)))
+  let totalx = arr.length
+  let totaly = maxy-miny
+
+
+  if(connect){
+    ctx.beginPath()
+    ctx.strokeStyle = color
+    ctx.moveTo(0,canvas.height-arr[0]/totaly*canvas.height)
+  }else ctx.fillStyle = color
+
   for(let x=0;x<=totalx;x++){
-    ctx.fillRect(x/totalx*canvas.width,canvas.height-arr[x]/totaly*canvas.height,1,1)
+    let rely = arr[x]-miny
+    if(connect){
+      ctx.lineTo(x/totalx*canvas.width,canvas.height-rely/totaly*canvas.height)
+    }else{
+      ctx.fillRect(x/totalx*canvas.width,canvas.height-rely/totaly*canvas.height,1,1)
+    }
   }
+  ctx.stroke()
+}
+
+function getDerative(arr,maxy){
+  let result = []
+  for(let i=0;i<arr.length;i++){
+    result.push((arr[i+1]-arr[i])*10+10)
+    console.log((arr[i+1]-arr[i]))
+  }
+  return result
 }
