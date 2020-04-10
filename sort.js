@@ -15,7 +15,7 @@ for(let i=0;i<totalx;i++) arr.push(Math.random()*totaly)
 
 begintime = performance.now()
 
-arr = arr.sort()
+arr.sort()
 
 console.log("javascript builtin sort: " + (performance.now()-begintime) + " ms")
 
