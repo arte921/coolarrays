@@ -1,36 +1,36 @@
 var mcbwidth = window.innerWidth
 var mcbheight = window.innerHeight
-
 var canvas = document.getElementById("canvas")
 var ctx = canvas.getContext("2d")
-
 canvas.width = mcbwidth
 canvas.height = mcbheight
 
-const maxxp = mcbwidth
-const maxyp = 1000
-
-const maxxt = 40
-
-const maxyt = Math.pow(2,32)-1
-
+const maxxt = 4000
+const maxyt = Math.pow(2,32)-1 //dont change
 var truearr = new Uint32Array(maxxt)
 window.crypto.getRandomValues(truearr)
-
-let pseudoarr = []
-for(let i=0;i<maxxp;i++) pseudoarr.push(Math.random()*maxyp)
-
-
-pseudoarr.sort()
 truearr.sort()
-
-pseudoarr = makeFlat(pseudoarr, maxyp, 1/4)
 //truearr = makeFlat(truearr, maxyt, 2/4)
+plotArray(truearr,"#FF0000",false)
 
+const maxxp = mcbwidth
+const maxyp = 4000
+let pseudoarr = []
+for(let i=0;i<=maxxp;i++) pseudoarr.push(Math.random()*maxyp)
+pseudoarr.sort()
+//pseudoarr = makeFlat(pseudoarr, maxyp, 1/4)
+//plotArray(pseudoarr,"#0000FF",true)
 
-//plotArray(pseudoarr, 0, maxyp, "#0000FF",true)
-plotArray(truearr, 0, maxyt, "#FF0000",true)
-//plotArray(getDerative(pseudoarr,maxyp), 0,pseudoarr.length,1,"#00FF00")
+const maxxw = 4000
+let walkarr = []
+let last = 1000
+for(let i=0;i<maxxw;i++){
+  let random = Math.random()-0.5
+  let current = last + random
+  walkarr.push(current)
+  last = current
+}
+plotArray(walkarr,"#00FF00",true)
 
 function makeFlat(arr, totaly, plotheight){
   let totalx = arr.length
@@ -41,7 +41,7 @@ function makeFlat(arr, totaly, plotheight){
   return oarr
 }
 
-function plotArray(arr, mingy, f, color,connect){
+function plotArray(arr,color,connect){
   let maxy = Math.max(...arr.filter(number => !isNaN(number)))
   let miny = Math.min(...arr.filter(number => !isNaN(number)))
   let totalx = arr.length
