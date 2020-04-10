@@ -1,8 +1,8 @@
 var mcbwidth = window.innerWidth
 var mcbheight = window.innerHeight
 
-var totalx = mcbwidth
-var totaly = mcbheight
+var maxx = mcbwidth
+var maxy = Math.pow(2,32)-1
 
 var canvas = document.getElementById("canvas")
 var ctx = canvas.getContext("2d")
@@ -10,20 +10,31 @@ var ctx = canvas.getContext("2d")
 canvas.width = mcbwidth
 canvas.height = mcbheight
 
-let arr = []
-for(let i=0;i<totalx;i++) arr.push(Math.random()*totaly)
+var truearr = new Uint32Array(maxx)
+window.crypto.getRandomValues(truearr)
+truearr.sort()
 
-begintime = performance.now()
+let pseudoarr = []
+for(let i=0;i<maxx;i++) pseudoarr.push(Math.random()*maxy)
+pseudoarr.sort()
 
-arr.sort()
+pseudoarr = makeFlat(pseudoarr, maxx, maxy, 2/3)
+truearr = makeFlat(truearr, maxx, maxy, 1/3)
 
-console.log("javascript builtin sort: " + (performance.now()-begintime) + " ms")
+plotArray(truearr, maxx, maxy, 1/3, "#FF0000")
+plotArray(pseudoarr, maxx, maxy, 2/3, "#0000FF")
 
-
-function render(x,y){
-  ctx.fillRect(x/totalx*canvas.width,canvas.height-y/totaly*canvas.height,1,1)
+function makeFlat(arr, totalx, totaly, plotheight){
+  let oarr = []
+  for(let i=0;i<=totalx;i++){
+    oarr[i] = arr[i] - i/totalx*totaly+totaly*plotheight
+  }
+  return oarr
 }
 
-for(let i=0;i<=arr.length;i++){
-  render(i,arr[i])
+function plotArray(arr, totalx, totaly, plotheight, color){
+  ctx.fillStyle = color
+  for(let x=0;x<=totalx;x++){
+    ctx.fillRect(x/totalx*canvas.width,canvas.height-arr[x]/totaly*canvas.height,1,1)
+  }
 }
